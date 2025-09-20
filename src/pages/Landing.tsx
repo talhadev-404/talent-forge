@@ -101,6 +101,13 @@ const Landing = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button 
+              size="lg" 
+              className="bg-gradient-primary text-white px-8 py-3 text-lg hover:scale-105 transition-transform"
+              onClick={() => navigate('/live-interview')}
+            >
+              Start Live Interview
+            </Button>
+            <Button 
               size="lg"
               onClick={() => navigate('/register')}
               className="bg-white text-primary hover:bg-white/90 shadow-glow"

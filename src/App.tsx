@@ -15,6 +15,7 @@ import AdminDashboard from "./pages/admin/Dashboard";
 import JobBoard from "./pages/candidate/JobBoard";
 import InterviewRoom from "./pages/InterviewRoom";
 import CodingAssessment from "./pages/CodingAssessment";
+import LiveInterview from "./pages/LiveInterview";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -46,7 +47,8 @@ const App = () => (
             
             {/* Shared Interview Features */}
             <Route path="/interview/:id" element={<InterviewRoom />} />
-            <Route path="/assessment/:id" element={<CodingAssessment />} />
+            <Route path="/coding-assessment/:id" element={<CodingAssessment />} />
+            <Route path="/live-interview" element={<LiveInterview />} />
             
             <Route path="*" element={<NotFound />} />
           </Routes>
