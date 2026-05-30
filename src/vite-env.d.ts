@@ -42,5 +42,5 @@ interface Window {
   webkitSpeechRecognition: new () => SpeechRecognition;
 }
 
-declare var SpeechRecognition: new () => SpeechRecognition;
-declare var webkitSpeechRecognition: new () => SpeechRecognition;
+declare let SpeechRecognition: new () => SpeechRecognition;
+declare let webkitSpeechRecognition: new () => SpeechRecognition;

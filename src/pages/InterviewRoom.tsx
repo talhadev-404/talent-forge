@@ -1,10 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { useMediaPermissions } from "@/hooks/use-media-permissions";
 import { 
   Video, 
   VideoOff, 
@@ -18,7 +20,10 @@ import {
   PhoneOff,
   Clock,
   Star,
-  FileText
+  FileText,
+  AlertCircle,
+  CheckCircle,
+  RefreshCw
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -27,6 +32,7 @@ const InterviewRoom = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { permissionState, requestMediaStream, getPermissionInstructions, checkPermissions } = useMediaPermissions();
   
   const [isVideoOn, setIsVideoOn] = useState(true);
   const [isAudioOn, setIsAudioOn] = useState(true);
@@ -37,6 +43,11 @@ const InterviewRoom = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [interviewStarted, setInterviewStarted] = useState(false);
   const [notes, setNotes] = useState("");
+  const [isRequestingPermissions, setIsRequestingPermissions] = useState(false);
+  
+  // Video refs for camera streams
+  const localVideoRef = useRef<HTMLVideoElement>(null);
+  const remoteVideoRef = useRef<HTMLVideoElement>(null);
 
   // Mock interview data
   const interviewData = {
@@ -70,13 +81,58 @@ const InterviewRoom = () => {
     return () => clearInterval(timer);
   }, []);
 
-  const handleStartInterview = () => {
-    setInterviewStarted(true);
-    setIsRecording(true);
-    toast({
-      title: "Interview Started",
-      description: "Recording has begun. Good luck!"
-    });
+  // Cleanup media streams on unmount
+  useEffect(() => {
+    const localVideo = localVideoRef.current;
+    const remoteVideo = remoteVideoRef.current;
+    return () => {
+      if (localVideo?.srcObject) {
+        const stream = localVideo.srcObject as MediaStream;
+        stream.getTracks().forEach(track => track.stop());
+      }
+      if (remoteVideo?.srcObject) {
+        const stream = remoteVideo.srcObject as MediaStream;
+        stream.getTracks().forEach(track => track.stop());
+      }
+    };
+  }, []);
+
+  const handleStartInterview = async () => {
+    setIsRequestingPermissions(true);
+    
+    try {
+      const result = await requestMediaStream({ video: true, audio: true });
+      
+      if (result.error) {
+        toast({
+          title: "Camera/Microphone Error",
+          description: result.error,
+          variant: "destructive"
+        });
+        return;
+      }
+
+      if (result.stream && localVideoRef.current) {
+        localVideoRef.current.srcObject = result.stream;
+        localVideoRef.current.play();
+      }
+
+      setInterviewStarted(true);
+      setIsRecording(true);
+      toast({
+        title: "Interview Started",
+        description: "Camera and microphone are now active. Recording has begun!"
+      });
+    } catch (error) {
+      console.error('Media access error:', error);
+      toast({
+        title: "Camera/Microphone Error",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsRequestingPermissions(false);
+    }
   };
 
   const handleEndInterview = () => {
@@ -89,6 +145,12 @@ const InterviewRoom = () => {
 
   const toggleVideo = () => {
     setIsVideoOn(!isVideoOn);
+    if (localVideoRef.current?.srcObject) {
+      const stream = localVideoRef.current.srcObject as MediaStream;
+      stream.getVideoTracks().forEach(track => {
+        track.enabled = isVideoOn; // Enable when current state is off
+      });
+    }
     toast({
       title: isVideoOn ? "Camera Off" : "Camera On",
       description: `Video is now ${isVideoOn ? 'disabled' : 'enabled'}`
@@ -97,18 +159,59 @@ const InterviewRoom = () => {
 
   const toggleAudio = () => {
     setIsAudioOn(!isAudioOn);
+    if (localVideoRef.current?.srcObject) {
+      const stream = localVideoRef.current.srcObject as MediaStream;
+      stream.getAudioTracks().forEach(track => {
+        track.enabled = isAudioOn; // Enable when current state is off
+      });
+    }
     toast({
       title: isAudioOn ? "Microphone Off" : "Microphone On", 
       description: `Audio is now ${isAudioOn ? 'muted' : 'unmuted'}`
     });
   };
 
-  const toggleScreenShare = () => {
-    setIsScreenSharing(!isScreenSharing);
-    toast({
-      title: isScreenSharing ? "Screen Share Stopped" : "Screen Share Started",
-      description: `Screen sharing is now ${isScreenSharing ? 'disabled' : 'enabled'}`
-    });
+  const toggleScreenShare = async () => {
+    try {
+      if (!isScreenSharing) {
+        // Start screen sharing
+        const screenStream = await navigator.mediaDevices.getDisplayMedia({
+          video: true,
+          audio: true
+        });
+        
+        // You could replace the local video with screen share
+        // or display it in a separate area
+        setIsScreenSharing(true);
+        toast({
+          title: "Screen Share Started",
+          description: "Your screen is now being shared"
+        });
+        
+        // Handle screen share end
+        screenStream.getVideoTracks()[0].onended = () => {
+          setIsScreenSharing(false);
+          toast({
+            title: "Screen Share Stopped",
+            description: "Screen sharing has ended"
+          });
+        };
+      } else {
+        // Stop screen sharing
+        setIsScreenSharing(false);
+        toast({
+          title: "Screen Share Stopped",
+          description: "Screen sharing has been disabled"
+        });
+      }
+    } catch (error) {
+      console.error('Screen share error:', error);
+      toast({
+        title: "Screen Share Error",
+        description: "Failed to start screen sharing",
+        variant: "destructive"
+      });
+    }
   };
 
   const sendChatMessage = () => {
@@ -121,6 +224,9 @@ const InterviewRoom = () => {
       setChatMessage("");
     }
   };
+
+  // Get permission instructions
+  const permissionInstructions = getPermissionInstructions();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/20">
@@ -149,6 +255,37 @@ const InterviewRoom = () => {
         </div>
       </header>
 
+      {/* Permission Status Alert */}
+      {permissionInstructions && !interviewStarted && (
+        <div className="px-6 py-4">
+          <Alert className={permissionInstructions.title === 'Permission Denied' ? 'border-destructive' : 'border-primary'}>
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              <div className="space-y-2">
+                <p className="font-medium">{permissionInstructions.title}</p>
+                <p>{permissionInstructions.message}</p>
+                <ul className="list-disc list-inside space-y-1 text-sm">
+                  {permissionInstructions.steps.map((step, index) => (
+                    <li key={index}>{step}</li>
+                  ))}
+                </ul>
+                {permissionInstructions.title === 'Permission Denied' && (
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={checkPermissions}
+                    className="mt-2"
+                  >
+                    <RefreshCw className="w-4 h-4 mr-2" />
+                    Check Again
+                  </Button>
+                )}
+              </div>
+            </AlertDescription>
+          </Alert>
+        </div>
+      )}
+
       <div className="p-6">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 h-[calc(100vh-200px)]">
           {/* Main Video Area */}
@@ -159,12 +296,13 @@ const InterviewRoom = () => {
               <Card className="relative overflow-hidden bg-gradient-to-br from-primary/20 to-secondary/20">
                 <CardContent className="p-0 h-full flex items-center justify-center">
                   {isVideoOn ? (
-                    <div className="w-full h-full bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center">
-                      <div className="text-center text-muted-foreground">
-                        <Video className="w-12 h-12 mx-auto mb-2" />
-                        <p>Your Video</p>
-                      </div>
-                    </div>
+                    <video
+                      ref={localVideoRef}
+                      autoPlay
+                      muted
+                      playsInline
+                      className="w-full h-full object-cover"
+                    />
                   ) : (
                     <div className="w-full h-full bg-muted flex items-center justify-center">
                       <div className="text-center">
@@ -182,10 +320,18 @@ const InterviewRoom = () => {
               {/* Remote Video */}
               <Card className="relative overflow-hidden bg-gradient-to-br from-secondary/20 to-primary/20">
                 <CardContent className="p-0 h-full flex items-center justify-center">
+                  <video
+                    ref={remoteVideoRef}
+                    autoPlay
+                    playsInline
+                    className="w-full h-full object-cover bg-gradient-to-br from-secondary/10 to-primary/10"
+                    style={{ display: 'none' }} // Hidden until remote stream is available
+                  />
                   <div className="w-full h-full bg-gradient-to-br from-secondary/10 to-primary/10 flex items-center justify-center">
                     <div className="text-center text-muted-foreground">
                       <Users className="w-12 h-12 mx-auto mb-2" />
                       <p>{interviewData.interviewer}</p>
+                      <p className="text-xs mt-1">Waiting for interviewer...</p>
                     </div>
                   </div>
                   <div className="absolute bottom-2 left-2 bg-black/50 text-white px-2 py-1 rounded text-sm">
@@ -250,9 +396,22 @@ const InterviewRoom = () => {
 
                   <div className="flex items-center space-x-2">
                     {!interviewStarted ? (
-                      <Button onClick={handleStartInterview} className="bg-success hover:bg-success/90">
-                        <Phone className="w-4 h-4 mr-2" />
-                        Start Interview
+                      <Button 
+                        onClick={handleStartInterview} 
+                        disabled={isRequestingPermissions || !permissionState.isSupported}
+                        className="bg-success hover:bg-success/90"
+                      >
+                        {isRequestingPermissions ? (
+                          <>
+                            <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                            Requesting Access...
+                          </>
+                        ) : (
+                          <>
+                            <Phone className="w-4 h-4 mr-2" />
+                            Start Interview
+                          </>
+                        )}
                       </Button>
                     ) : (
                       <Button variant="destructive" onClick={handleEndInterview}>
