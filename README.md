@@ -1,73 +1,180 @@
-# Welcome to your Lovable project
+<p align="center">
+  <img src="https://img.shields.io/badge/TalentForge-AI-blueviolet?style=for-the-badge&logo=sparkles&logoColor=white" alt="TalentForge AI" />
+</p>
 
-## Project info
+<h1 align="center">🎯 TalentForge AI</h1>
 
-**URL**: https://lovable.dev/projects/b2c22e0e-032a-44a5-8e6f-8787103746ee
+<p align="center">
+  <b>Next-Gen AI-Powered Video Interview Platform</b><br/>
+  <i>Revolutionizing the hiring process with intelligent video interviews, real-time AI analysis, and smart candidate evaluation.</i>
+</p>
 
-## How can I edit this code?
+<p align="center">
+  <img src="https://img.shields.io/badge/React-18.3-61DAFB?style=flat-square&logo=react&logoColor=white" />
+  <img src="https://img.shields.io/badge/TypeScript-5.8-3178C6?style=flat-square&logo=typescript&logoColor=white" />
+  <img src="https://img.shields.io/badge/Vite-5.4-646CFF?style=flat-square&logo=vite&logoColor=white" />
+  <img src="https://img.shields.io/badge/Tailwind_CSS-3.4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white" />
+  <img src="https://img.shields.io/badge/shadcn/ui-Components-000000?style=flat-square&logo=shadcnui&logoColor=white" />
+</p>
 
-There are several ways of editing your application.
+---
 
-**Use Lovable**
+## ✨ Overview
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/b2c22e0e-032a-44a5-8e6f-8787103746ee) and start prompting.
+**TalentForge AI** is a comprehensive, full-stack video interview platform designed for modern hiring teams. It connects **candidates**, **recruiters**, **interviewers**, and **admins** through a seamless, AI-enhanced experience — from job discovery to final evaluation.
 
-Changes made via Lovable will be committed automatically to this repo.
+---
 
-**Use your preferred IDE**
+## 🚀 Key Features
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### 🎥 Live Video Interviews
+- Real-time video/audio communication with camera & microphone controls
+- Screen sharing capabilities
+- In-interview chat messaging
+- Session recording and playback
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### 🤖 AI-Powered Analysis
+- Real-time speech recognition and transcription
+- AI-generated interview questions tailored to job roles
+- Automated candidate scoring and evaluation
+- Smart feedback generation
 
-Follow these steps:
+### 💻 Coding Assessment
+- Built-in code editor with syntax highlighting
+- Multiple language support
+- Real-time code evaluation
+- Timed assessment sessions
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### 👥 Multi-Role Dashboards
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+| Role | Features |
+|------|----------|
+| **Candidate** | Job board, application tracking, interview preparation, profile management |
+| **Recruiter** | Job posting, candidate pipeline, interview scheduling, analytics |
+| **Interviewer** | Interview queue, evaluation forms, candidate review, scoring |
+| **Admin** | User management, system analytics, platform configuration |
 
-# Step 3: Install the necessary dependencies.
-npm i
+### 🎨 Premium Design
+- Glassmorphism UI with dark/light mode support
+- Smooth micro-animations and transitions
+- Fully responsive — works on desktop, tablet, and mobile
+- Modern typography with Inter font family
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| **Frontend Framework** | React 18 with TypeScript |
+| **Build Tool** | Vite 5 |
+| **Styling** | Tailwind CSS 3.4 + shadcn/ui components |
+| **State Management** | TanStack React Query |
+| **Routing** | React Router v6 |
+| **Form Handling** | React Hook Form + Zod validation |
+| **Charts** | Recharts |
+| **Icons** | Lucide React |
+| **Notifications** | Sonner toast |
+
+---
+
+## 📁 Project Structure
+
+```
+talent-forge/
+├── public/                  # Static assets
+├── src/
+│   ├── components/
+│   │   ├── layout/          # DashboardLayout, navigation
+│   │   ├── landing/         # Landing page sections
+│   │   └── ui/              # shadcn/ui component library
+│   ├── hooks/               # Custom React hooks (media permissions, speech, etc.)
+│   ├── pages/
+│   │   ├── admin/           # Admin dashboard
+│   │   ├── candidate/       # Candidate dashboard & job board
+│   │   ├── interviewer/     # Interviewer dashboard
+│   │   ├── recruiter/       # Recruiter dashboard
+│   │   ├── Landing.tsx      # Main landing page
+│   │   ├── LiveInterview.tsx # Live video interview room
+│   │   ├── InterviewRoom.tsx # Interview session management
+│   │   ├── CodingAssessment.tsx # Code assessment module
+│   │   ├── Login.tsx        # Authentication - login
+│   │   └── Register.tsx     # Authentication - registration
+│   ├── lib/                 # Utility functions
+│   └── App.tsx              # Root app with routing
+├── tailwind.config.ts       # Tailwind configuration
+├── vite.config.ts           # Vite configuration
+├── tsconfig.json            # TypeScript configuration
+└── package.json
+```
+
+---
+
+## ⚡ Getting Started
+
+### Prerequisites
+
+- **Node.js** ≥ 18.x
+- **npm** ≥ 9.x
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/talhadev-404/talent-forge.git
+
+# Navigate to the project
+cd talent-forge
+
+# Install dependencies
+npm install
+
+# Start the development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+The app will be running at **http://localhost:5173**
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Build for Production
 
-**Use GitHub Codespaces**
+```bash
+npm run build
+npm run preview
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+---
 
-## What technologies are used for this project?
+## 📸 Pages & Routes
 
-This project is built with:
+| Route | Page | Description |
+|-------|------|-------------|
+| `/` | Landing | Hero section, features, testimonials, pricing |
+| `/login` | Login | Email/password authentication |
+| `/register` | Register | Multi-role account creation |
+| `/candidate/dashboard` | Candidate Dashboard | Job tracking, upcoming interviews |
+| `/candidate/jobs` | Job Board | Browse and apply for positions |
+| `/recruiter/dashboard` | Recruiter Dashboard | Pipeline management, analytics |
+| `/interviewer/dashboard` | Interviewer Dashboard | Interview queue, evaluations |
+| `/admin/dashboard` | Admin Dashboard | System-wide management |
+| `/interview/:id` | Interview Room | Pre-interview setup & checks |
+| `/live-interview/:id` | Live Interview | Real-time video interview session |
+| `/coding-assessment/:id` | Coding Assessment | Timed coding challenges |
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+---
 
-## How can I deploy this project?
+## 🧑‍💻 Author
 
-Simply open [Lovable](https://lovable.dev/projects/b2c22e0e-032a-44a5-8e6f-8787103746ee) and click on Share -> Publish.
+**Talha Dev**
+- GitHub: [@talhadev-404](https://github.com/talhadev-404)
 
-## Can I connect a custom domain to my Lovable project?
+---
 
-Yes, you can!
+## 📄 License
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+This project is licensed under the [MIT License](LICENSE).
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+---
+
+<p align="center">
+  Built with ❤️ using React, TypeScript & AI
+</p>

@@ -4,13 +4,13 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate, useLocation, Link } from "react-router-dom";
-import { 
-  Video, 
-  Menu, 
-  X, 
+import {
+  Video,
+  Menu,
+  X,
   Home,
   Briefcase,
-  Calendar, 
+  Calendar,
   Users,
   BarChart3,
   Settings,
@@ -85,16 +85,15 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     <div className="min-h-screen bg-cyber-grid bg-background/95">
       {/* Mobile sidebar backdrop */}
       {sidebarOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/60 lg:hidden z-45"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
       {/* Sidebar with Glass Panel */}
-      <div className={`fixed inset-y-0 left-0 z-50 w-64 glass-panel border-r transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${
-        sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-      }`}>
+      <div className={`fixed inset-y-0 left-0 z-50 w-64 glass-panel border-r transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}>
         <div className="flex items-center justify-between h-16 px-6 border-b border-border/70">
           <Link to="/" className="flex items-center space-x-2">
             <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center shadow-glow">
@@ -118,11 +117,10 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
             <Link
               key={item.name}
               to={item.href}
-              className={`flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
-                isActive(item.href)
+              className={`flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all ${isActive(item.href)
                   ? 'bg-gradient-primary text-white shadow-glow'
                   : 'text-muted-foreground hover:bg-accent/40 hover:text-foreground'
-              }`}
+                }`}
             >
               <item.icon className="h-4.5 w-4.5" />
               <span>{item.name}</span>
