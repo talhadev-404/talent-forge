@@ -108,7 +108,3 @@ npm run preview
 This project is licensed under the [MIT License](LICENSE).
 
 ---
-
-<p align="center">
-  Built with ❤️ using React, TypeScript & AI
-</p>
