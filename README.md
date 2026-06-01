@@ -62,54 +62,6 @@
 
 ---
 
-## 🛠️ Tech Stack
-
-| Layer | Technology |
-|-------|-----------|
-| **Frontend Framework** | React 18 with TypeScript |
-| **Build Tool** | Vite 5 |
-| **Styling** | Tailwind CSS 3.4 + shadcn/ui components |
-| **State Management** | TanStack React Query |
-| **Routing** | React Router v6 |
-| **Form Handling** | React Hook Form + Zod validation |
-| **Charts** | Recharts |
-| **Icons** | Lucide React |
-| **Notifications** | Sonner toast |
-
----
-
-## 📁 Project Structure
-
-```
-talent-forge/
-├── public/                  # Static assets
-├── src/
-│   ├── components/
-│   │   ├── layout/          # DashboardLayout, navigation
-│   │   ├── landing/         # Landing page sections
-│   │   └── ui/              # shadcn/ui component library
-│   ├── hooks/               # Custom React hooks (media permissions, speech, etc.)
-│   ├── pages/
-│   │   ├── admin/           # Admin dashboard
-│   │   ├── candidate/       # Candidate dashboard & job board
-│   │   ├── interviewer/     # Interviewer dashboard
-│   │   ├── recruiter/       # Recruiter dashboard
-│   │   ├── Landing.tsx      # Main landing page
-│   │   ├── LiveInterview.tsx # Live video interview room
-│   │   ├── InterviewRoom.tsx # Interview session management
-│   │   ├── CodingAssessment.tsx # Code assessment module
-│   │   ├── Login.tsx        # Authentication - login
-│   │   └── Register.tsx     # Authentication - registration
-│   ├── lib/                 # Utility functions
-│   └── App.tsx              # Root app with routing
-├── tailwind.config.ts       # Tailwind configuration
-├── vite.config.ts           # Vite configuration
-├── tsconfig.json            # TypeScript configuration
-└── package.json
-```
-
----
-
 ## ⚡ Getting Started
 
 ### Prerequisites
@@ -141,24 +93,6 @@ The app will be running at **http://localhost:5173**
 npm run build
 npm run preview
 ```
-
----
-
-## 📸 Pages & Routes
-
-| Route | Page | Description |
-|-------|------|-------------|
-| `/` | Landing | Hero section, features, testimonials, pricing |
-| `/login` | Login | Email/password authentication |
-| `/register` | Register | Multi-role account creation |
-| `/candidate/dashboard` | Candidate Dashboard | Job tracking, upcoming interviews |
-| `/candidate/jobs` | Job Board | Browse and apply for positions |
-| `/recruiter/dashboard` | Recruiter Dashboard | Pipeline management, analytics |
-| `/interviewer/dashboard` | Interviewer Dashboard | Interview queue, evaluations |
-| `/admin/dashboard` | Admin Dashboard | System-wide management |
-| `/interview/:id` | Interview Room | Pre-interview setup & checks |
-| `/live-interview/:id` | Live Interview | Real-time video interview session |
-| `/coding-assessment/:id` | Coding Assessment | Timed coding challenges |
 
 ---
 
