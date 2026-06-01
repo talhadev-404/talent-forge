@@ -2,6 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 import { 
   Users, 
   Briefcase, 
@@ -18,6 +19,7 @@ import DashboardLayout from "@/components/layout/DashboardLayout";
 
 const AdminDashboard = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   // Mock data - would come from API
   const systemStats = [
@@ -97,7 +99,7 @@ const AdminDashboard = () => {
               <Download className="h-4 w-4 mr-2" />
               Export Report
             </Button>
-            <Button>
+            <Button onClick={() => navigate('/admin/settings')}>
               <Settings className="h-4 w-4 mr-2" />
               System Settings
             </Button>
@@ -187,7 +189,7 @@ const AdminDashboard = () => {
               <p className="text-sm text-muted-foreground mb-4">
                 Manage user accounts, roles, and permissions
               </p>
-              <Button className="w-full">
+              <Button className="w-full" onClick={() => navigate('/admin/users')}>
                 Manage Users
               </Button>
             </CardContent>
@@ -204,7 +206,7 @@ const AdminDashboard = () => {
               <p className="text-sm text-muted-foreground mb-4">
                 Monitor security events and configure policies
               </p>
-              <Button className="w-full" variant="outline">
+              <Button className="w-full" variant="outline" onClick={() => navigate('/admin/security')}>
                 Security Settings
               </Button>
             </CardContent>
@@ -221,7 +223,7 @@ const AdminDashboard = () => {
               <p className="text-sm text-muted-foreground mb-4">
                 View detailed reports and system analytics
               </p>
-              <Button className="w-full" variant="outline">
+              <Button className="w-full" variant="outline" onClick={() => navigate('/admin/analytics')}>
                 View Reports
               </Button>
             </CardContent>

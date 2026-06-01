@@ -113,7 +113,7 @@ const RecruiterDashboard = () => {
             <h1 className="text-3xl font-bold">Recruiter Dashboard</h1>
             <p className="text-muted-foreground">Manage your hiring pipeline and track candidates</p>
           </div>
-          <Button className="bg-gradient-primary hover:opacity-90">
+          <Button className="bg-gradient-primary hover:opacity-90" onClick={() => navigate('/recruiter/jobs')}>
             <Plus className="h-4 w-4 mr-2" />
             Post New Job
           </Button>
@@ -283,19 +283,19 @@ const RecruiterDashboard = () => {
           </CardHeader>
           <CardContent>
             <div className="flex flex-wrap gap-4">
-              <Button>
+              <Button onClick={() => navigate('/recruiter/jobs')}>
                 <Plus className="h-4 w-4 mr-2" />
                 Post Job
               </Button>
-              <Button variant="outline">
+              <Button variant="outline" onClick={() => navigate('/recruiter/candidates')}>
                 <Users className="h-4 w-4 mr-2" />
                 View Candidates
               </Button>
-              <Button variant="outline">
+              <Button variant="outline" onClick={() => navigate('/recruiter/analytics')}>
                 <BarChart3 className="h-4 w-4 mr-2" />
                 Analytics
               </Button>
-              <Button variant="outline">
+              <Button variant="outline" onClick={() => navigate('/recruiter/interviews')}>
                 <Calendar className="h-4 w-4 mr-2" />
                 Schedule Interview
               </Button>

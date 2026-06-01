@@ -9,9 +9,22 @@ import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import CandidateDashboard from "./pages/candidate/Dashboard";
+import CandidateApplications from "./pages/candidate/Applications";
+import CandidateProfile from "./pages/candidate/Profile";
 import RecruiterDashboard from "./pages/recruiter/Dashboard";
+import RecruiterJobPostings from "./pages/recruiter/JobPostings";
+import RecruiterCandidates from "./pages/recruiter/Candidates";
+import RecruiterInterviews from "./pages/recruiter/Interviews";
+import RecruiterAnalytics from "./pages/recruiter/Analytics";
 import InterviewerDashboard from "./pages/interviewer/Dashboard";
+import InterviewerInterviews from "./pages/interviewer/Interviews";
+import InterviewerEvaluations from "./pages/interviewer/Evaluations";
+import InterviewerTemplates from "./pages/interviewer/Templates";
 import AdminDashboard from "./pages/admin/Dashboard";
+import AdminUserManagement from "./pages/admin/UserManagement";
+import AdminSystemSettings from "./pages/admin/SystemSettings";
+import AdminSecurity from "./pages/admin/Security";
+import AdminAnalytics from "./pages/admin/Analytics";
 import JobBoard from "./pages/candidate/JobBoard";
 import InterviewRoom from "./pages/InterviewRoom";
 import CodingAssessment from "./pages/CodingAssessment";
@@ -35,15 +48,28 @@ const App = () => (
             {/* Candidate Routes */}
             <Route path="/candidate/dashboard" element={<CandidateDashboard />} />
             <Route path="/candidate/jobs" element={<JobBoard />} />
+            <Route path="/candidate/applications" element={<CandidateApplications />} />
+            <Route path="/candidate/profile" element={<CandidateProfile />} />
             
             {/* Recruiter Routes */}
             <Route path="/recruiter/dashboard" element={<RecruiterDashboard />} />
+            <Route path="/recruiter/jobs" element={<RecruiterJobPostings />} />
+            <Route path="/recruiter/candidates" element={<RecruiterCandidates />} />
+            <Route path="/recruiter/interviews" element={<RecruiterInterviews />} />
+            <Route path="/recruiter/analytics" element={<RecruiterAnalytics />} />
             
             {/* Interviewer Routes */}
             <Route path="/interviewer/dashboard" element={<InterviewerDashboard />} />
+            <Route path="/interviewer/interviews" element={<InterviewerInterviews />} />
+            <Route path="/interviewer/evaluations" element={<InterviewerEvaluations />} />
+            <Route path="/interviewer/templates" element={<InterviewerTemplates />} />
             
             {/* Admin Routes */}
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
+            <Route path="/admin/users" element={<AdminUserManagement />} />
+            <Route path="/admin/settings" element={<AdminSystemSettings />} />
+            <Route path="/admin/security" element={<AdminSecurity />} />
+            <Route path="/admin/analytics" element={<AdminAnalytics />} />
             
             {/* Shared Interview Features */}
             <Route path="/interview/:id" element={<InterviewRoom />} />

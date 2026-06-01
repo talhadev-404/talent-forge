@@ -282,15 +282,15 @@ const InterviewerDashboard = () => {
           </CardHeader>
           <CardContent>
             <div className="flex flex-wrap gap-4">
-              <Button>
+              <Button onClick={() => navigate("/interviewer/interviews")}>
                 <Video className="h-4 w-4 mr-2" />
                 Start Interview
               </Button>
-              <Button variant="outline">
+              <Button variant="outline" onClick={() => navigate("/interviewer/templates")}>
                 <FileText className="h-4 w-4 mr-2" />
                 View Templates
               </Button>
-              <Button variant="outline">
+              <Button variant="outline" onClick={() => navigate("/interviewer/evaluations")}>
                 <Star className="h-4 w-4 mr-2" />
                 My Evaluations
               </Button>

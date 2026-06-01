@@ -45,15 +45,15 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
           ...baseItems,
           { name: 'Job Board', href: '/candidate/jobs', icon: Briefcase },
           { name: 'My Applications', href: '/candidate/applications', icon: Calendar },
-          { name: 'Profile', href: '/candidate/profile', icon: Users },
+          { name: 'My Profile', href: '/candidate/profile', icon: Users },
         ];
       case 'recruiter':
         return [
           ...baseItems,
           { name: 'Job Postings', href: '/recruiter/jobs', icon: Briefcase },
-          { name: 'Candidates', href: '/recruiter/candidates', icon: Users },
           { name: 'Interviews', href: '/recruiter/interviews', icon: Calendar },
           { name: 'Analytics', href: '/recruiter/analytics', icon: BarChart3 },
+          { name: 'Candidates', href: '/recruiter/candidates', icon: Users },
         ];
       case 'interviewer':
         return [
@@ -66,9 +66,9 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
         return [
           ...baseItems,
           { name: 'User Management', href: '/admin/users', icon: Users },
-          { name: 'System Settings', href: '/admin/settings', icon: Settings },
           { name: 'Security', href: '/admin/security', icon: Shield },
           { name: 'Analytics', href: '/admin/analytics', icon: BarChart3 },
+          { name: 'System Settings', href: '/admin/settings', icon: Settings },
         ];
       default:
         return baseItems;

@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import Footer from "@/components/Footer";
 import { 
   Users, 
   Video, 
@@ -910,24 +911,7 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="py-12 border-t border-border/40 bg-card/60 backdrop-blur-sm">
-        <div className="container mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
-              <Video className="w-4.5 h-4.5 text-white" />
-            </div>
-            <span className="font-bold text-foreground">TalentForge AI</span>
-          </div>
-          <p className="text-xs text-muted-foreground">
-            &copy; 2026 TalentForge AI. Built with premium tech aesthetics. All rights reserved.
-          </p>
-          <div className="flex space-x-6 text-xs text-muted-foreground">
-            <a href="#" className="hover:text-foreground transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-foreground transition-colors">Terms of Service</a>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };
