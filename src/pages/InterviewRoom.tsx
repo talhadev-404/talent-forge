@@ -384,29 +384,109 @@ const InterviewRoom = () => {
                 {/* Local Video */}
                 <div className="glass-card relative rounded-2xl overflow-hidden shadow-lg border border-primary/20 flex items-center justify-center group transition-all duration-500 hover:border-primary/40 hover:shadow-glow/10">
                   {isVideoOn ? (
-                    <video
-                      ref={localVideoRef}
-                      autoPlay
-                      muted
-                      playsInline
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-card to-muted/10 flex flex-col items-center justify-center">
-                      <div className="w-20 h-20 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center mb-4 shadow-inner">
-                        <VideoOff className="w-8 h-8 text-primary/60" />
+                    <>
+                      <video
+                        ref={localVideoRef}
+                        autoPlay
+                        muted
+                        playsInline
+                        className="w-full h-full object-cover"
+                      />
+                      
+                      {/* Candidate Glassmorphic Profile Card Overlay */}
+                      <div className="absolute bottom-4 inset-x-4 glass-panel backdrop-blur-md border border-white/10 rounded-xl p-3 flex items-center justify-between z-10 transition-all duration-300 hover:border-primary/30">
+                        <div className="flex items-center space-x-3">
+                          <div className="relative">
+                            <img 
+                              src="/candidate_avatar.png" 
+                              alt="Alex Johnson" 
+                              className="w-10 h-10 rounded-full object-cover border border-primary/40"
+                            />
+                            <div className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border border-black ${isAudioOn ? 'bg-success animate-pulse' : 'bg-destructive'}`} />
+                          </div>
+                          <div className="text-left">
+                            <h4 className="text-xs font-bold text-white tracking-wide">Alex Johnson</h4>
+                            <p className="text-[10px] text-white/60 font-medium">Senior Frontend Developer</p>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center space-x-1.5">
+                          <Badge variant="outline" className={`text-[10px] px-2 py-0.5 font-semibold ${isAudioOn ? 'bg-success/10 border-success/30 text-success-light' : 'bg-destructive/10 border-destructive/30 text-destructive-light'}`}>
+                            {isAudioOn ? (
+                              <span className="flex items-center space-x-1">
+                                <Mic className="w-3 h-3 mr-0.5" />
+                                <span>Unmuted</span>
+                              </span>
+                            ) : (
+                              <span className="flex items-center space-x-1">
+                                <MicOff className="w-3 h-3 mr-0.5" />
+                                <span>Muted</span>
+                              </span>
+                            )}
+                          </Badge>
+                        </div>
                       </div>
-                      <p className="text-muted-foreground font-semibold text-sm">Your Camera is Off</p>
+                    </>
+                  ) : (
+                    <div className="w-full h-full relative flex items-center justify-center overflow-hidden">
+                      {/* Blurred candidate background */}
+                      <img
+                        src="/candidate_avatar.png"
+                        alt="Blurred Background"
+                        className="absolute inset-0 w-full h-full object-cover filter blur-xl opacity-20 scale-110"
+                      />
+                      
+                      {/* Centered Dashboard Card */}
+                      <div className="z-10 w-4/5 max-w-[280px] glass-panel backdrop-blur-md border border-white/10 rounded-2xl p-5 text-center flex flex-col items-center justify-center space-y-4 shadow-glow/5 hover:border-primary/20 transition-all duration-300">
+                        <div className="relative">
+                          <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-primary/40 shadow-glow/10">
+                            <img
+                              src="/candidate_avatar.png"
+                              alt="Alex Johnson"
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <div className="absolute bottom-0 right-0 p-1.5 rounded-full bg-destructive border border-white/15 text-white">
+                            <VideoOff className="w-3.5 h-3.5" />
+                          </div>
+                        </div>
+                        
+                        <div>
+                          <h3 className="text-sm font-bold text-white tracking-wide">Alex Johnson</h3>
+                          <p className="text-xs text-white/60 font-medium mt-0.5">Senior Frontend Developer</p>
+                        </div>
+
+                        <div className="flex flex-col items-center w-full space-y-2 pt-2 border-t border-white/5">
+                          {/* Audio Pill */}
+                          <Badge variant="outline" className={`text-[10px] w-full justify-center py-1 font-semibold ${isAudioOn ? 'bg-success/10 border-success/30 text-success-light' : 'bg-destructive/10 border-destructive/30 text-destructive-light'}`}>
+                            {isAudioOn ? (
+                              <span className="flex items-center justify-center space-x-1">
+                                <Mic className="w-3 h-3 mr-1" />
+                                <span>Mic Active</span>
+                              </span>
+                            ) : (
+                              <span className="flex items-center justify-center space-x-1">
+                                <MicOff className="w-3 h-3 mr-1" />
+                                <span>Mic Muted</span>
+                              </span>
+                            )}
+                          </Badge>
+                          
+                          {/* Camera Muted Alert Badge */}
+                          <Badge variant="outline" className="text-[10px] w-full justify-center py-1 bg-destructive/10 border-destructive/30 text-destructive-light font-semibold">
+                            <span className="flex items-center justify-center space-x-1">
+                              <AlertCircle className="w-3 h-3 mr-1" />
+                              <span>Camera Muted</span>
+                            </span>
+                          </Badge>
+                        </div>
+                      </div>
                     </div>
                   )}
                   {/* Status Overlay */}
-                  <div className="absolute top-4 left-4 glass-panel backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold flex items-center space-x-1.5 border-white/10">
+                  <div className="absolute top-4 left-4 glass-panel backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold flex items-center space-x-1.5 border border-white/10 z-10">
                     <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                    <span>Local Stream</span>
-                  </div>
-                  <div className="absolute bottom-4 left-4 glass-panel backdrop-blur-md text-white px-3 py-1 rounded-full text-xs font-medium flex items-center space-x-2 border-white/10">
-                    <span>You</span>
-                    {!isAudioOn && <MicOff className="w-3.5 h-3.5 text-destructive" />}
+                    <span className="text-white">Local Stream</span>
                   </div>
                 </div>
 
