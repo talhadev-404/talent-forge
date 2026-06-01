@@ -538,78 +538,81 @@ const LiveInterview = () => {
 
   if (!interviewStarted) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 p-6">
-        <div className="max-w-4xl mx-auto">
-          <Card className="border-2 border-primary/20">
-            <CardHeader className="text-center">
-              <div className="w-16 h-16 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-4">
-                <Brain className="w-8 h-8 text-white" />
+      <div className="min-h-screen bg-cyber-grid bg-background relative overflow-hidden flex items-center justify-center p-6">
+        {/* Background neon orbs */}
+        <div className="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] rounded-full bg-primary/10 blur-[120px] pointer-events-none" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] rounded-full bg-secondary/10 blur-[130px] pointer-events-none" />
+
+        <div className="max-w-4xl w-full mx-auto z-10">
+          <div className="glass-card border border-primary/20 shadow-lg rounded-3xl p-8 backdrop-blur-md">
+            <div className="text-center mb-8">
+              <div className="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center mx-auto mb-4 shadow-glow">
+                <Brain className="w-8 h-8 text-white animate-pulse" />
               </div>
-              <CardTitle className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+              <h2 className="text-3xl font-extrabold bg-gradient-to-r from-primary-light to-secondary-light bg-clip-text text-transparent tracking-tight">
                 AI-Powered Live Interview
-              </CardTitle>
-              <CardDescription className="text-lg">
-                Upload your resume, provide job details, and start your AI-assisted interview
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="space-y-4">
-                  <div>
-                    <Label htmlFor="candidate-name">Your Name</Label>
+              </h2>
+              <p className="text-muted-foreground text-sm mt-2 max-w-md mx-auto">
+                Upload your resume, provide job details, and start your AI-assisted interview experience.
+              </p>
+            </div>
+
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-5">
+                  <div className="space-y-2">
+                    <Label htmlFor="candidate-name" className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Your Name</Label>
                     <Input
                       id="candidate-name"
                       value={candidateName}
                       onChange={(e) => setCandidateName(e.target.value)}
                       placeholder="Enter your full name"
+                      className="bg-background/40 border-border/40 focus:border-secondary/50 rounded-xl"
                     />
                   </div>
                   
-                  <div>
-                    <Label htmlFor="resume-upload">Upload Resume (Optional)</Label>
-                    <div className="border-2 border-dashed border-muted rounded-lg p-4 text-center">
+                  <div className="space-y-2">
+                    <Label htmlFor="resume-upload" className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Upload Resume (Optional)</Label>
+                    <div className="border-2 border-dashed border-primary/20 hover:border-secondary/50 hover:bg-secondary/5 rounded-2xl p-6 text-center transition-all duration-300 group cursor-pointer relative">
                       <input
                         id="resume-upload"
                         type="file"
                         accept=".txt,.pdf,.doc,.docx"
                         onChange={handleResumeUpload}
-                        className="hidden"
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                       />
-                      <label htmlFor="resume-upload" className="cursor-pointer">
-                        <Upload className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
-                        <p className="text-sm text-muted-foreground">
-                          {resumeFile ? resumeFile.name : "Click to upload your resume"}
-                        </p>
-                      </label>
+                      <Upload className="w-8 h-8 mx-auto mb-2 text-primary/60 group-hover:text-secondary group-hover:scale-110 transition-all duration-300" />
+                      <p className="text-xs text-muted-foreground font-semibold">
+                        {resumeFile ? resumeFile.name : "Drag & drop or click to upload resume"}
+                      </p>
                     </div>
                     {resumeFile && (
-                      <Badge variant="secondary" className="mt-2">
-                        <FileText className="w-3 h-3 mr-1" />
-                        Resume uploaded
+                      <Badge variant="secondary" className="mt-2 bg-secondary/15 text-secondary border-secondary/20 font-medium">
+                        <FileText className="w-3.5 h-3.5 mr-1.5" />
+                        Resume loaded
                       </Badge>
                     )}
                   </div>
                 </div>
 
-                <div>
-                  <Label htmlFor="job-description">Job Description</Label>
+                <div className="space-y-2">
+                  <Label htmlFor="job-description" className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Job Description</Label>
                   <Textarea
                     id="job-description"
                     value={jobDescription}
                     onChange={(e) => setJobDescription(e.target.value)}
                     placeholder="Paste the job description here. The AI will generate relevant questions based on this..."
-                    className="min-h-48"
+                    className="min-h-[220px] bg-background/40 border-border/40 focus:border-secondary/50 rounded-xl resize-none text-sm leading-relaxed"
                   />
                 </div>
               </div>
-
 
               <div className="flex justify-center pt-4">
                 <Button 
                   onClick={startInterview}
                   disabled={isRequestingPermissions || !permissionState.isSupported}
                   size="lg"
-                  className="bg-gradient-primary text-white px-8 py-3 text-lg"
+                  className="bg-gradient-to-r from-primary to-secondary text-white font-bold px-8 py-6 rounded-xl text-md shadow-glow hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300"
                 >
                   {isRequestingPermissions ? (
                     <>
@@ -618,339 +621,323 @@ const LiveInterview = () => {
                     </>
                   ) : (
                     <>
-                      <Play className="w-5 h-5 mr-2" />
+                      <Play className="w-5 h-5 mr-2 animate-pulse" />
                       Start AI Interview
                     </>
                   )}
                 </Button>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted/20">
+    <div className="min-h-screen bg-cyber-grid bg-background relative overflow-hidden flex flex-col">
+      {/* Background neon orbs */}
+      <div className="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] rounded-full bg-primary/10 blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] rounded-full bg-secondary/10 blur-[130px] pointer-events-none" />
+
       {/* Header */}
-      <header className="bg-card/80 backdrop-blur-sm border-b px-6 py-4">
-        <div className="flex items-center justify-between">
+      <header className="glass-panel sticky top-0 z-40 backdrop-blur-md border-b border-border/40 px-6 py-4 transition-all duration-300">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
-              <Brain className="w-5 h-5 text-white" />
+            <div className="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center shadow-glow">
+              <Brain className="w-5 h-5 text-white animate-pulse" />
             </div>
             <div>
-              <h1 className="text-lg font-semibold">AI Live Interview</h1>
-              <p className="text-sm text-muted-foreground">{candidateName || "Anonymous Candidate"}</p>
+              <h1 className="text-lg font-bold tracking-tight bg-gradient-to-r from-primary-light to-secondary-light bg-clip-text text-transparent">AI Live Interview</h1>
+              <p className="text-xs text-muted-foreground font-medium flex items-center">
+                <User className="w-3.5 h-3.5 mr-1 text-secondary" />
+                {candidateName || "Anonymous Candidate"}
+              </p>
             </div>
           </div>
           
-          <div className="flex items-center space-x-4">
-            <Badge variant={isRecording ? "destructive" : "secondary"}>
-              {isRecording ? "Recording" : "Not Recording"}
-            </Badge>
-            <Badge variant={isListening ? "default" : "secondary"}>
-              {isListening ? "Listening" : "Not Listening"}
-            </Badge>
+          <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-2">
+              <span className={`inline-block w-2 h-2 rounded-full ${isRecording ? "bg-red-500 animate-ping" : "bg-muted"}`} />
+              <Badge variant={isRecording ? "destructive" : "secondary"} className={`font-semibold ${isRecording ? "bg-red-500/25 border-red-500 text-red-500" : ""}`}>
+                {isRecording ? "Recording Live" : "Standby"}
+              </Badge>
+            </div>
+            {isListening && (
+              <div className="flex items-center space-x-2">
+                <span className="w-2 h-2 rounded-full bg-primary animate-ping" />
+                <Badge variant="default" className="bg-primary/25 border-primary text-primary-light font-semibold">
+                  Listening
+                </Badge>
+              </div>
+            )}
             {isRecordingAudio && (
-              <Badge variant="destructive" className="animate-pulse">
+              <Badge variant="destructive" className="animate-pulse bg-red-600/30 border-red-500 text-red-500 font-semibold">
                 Recording Audio
               </Badge>
             )}
-            <div className="text-sm text-muted-foreground">
-              <Clock className="inline w-4 h-4 mr-1" />
+            <div className="text-sm font-medium text-muted-foreground flex items-center glass-panel px-3 py-1.5 rounded-lg border-white/5">
+              <Clock className="w-4 h-4 mr-2 text-secondary" />
               {currentTime.toLocaleTimeString()}
             </div>
           </div>
         </div>
       </header>
 
-      {/* Permission Status Alert */}
-      {!interviewStarted && (
-        <div className="px-6 py-4">
-          {(() => {
-            const permissionInstructions = getPermissionInstructions();
-            if (permissionInstructions) {
-              return (
-                <Alert className={permissionInstructions.title === 'Permission Denied' ? 'border-destructive' : 'border-primary'}>
-                  <AlertCircle className="h-4 w-4" />
-                  <AlertDescription>
-                    <div className="space-y-2">
-                      <p className="font-medium">{permissionInstructions.title}</p>
-                      <p>{permissionInstructions.message}</p>
-                      <ul className="list-disc list-inside space-y-1 text-sm">
-                        {permissionInstructions.steps.map((step, index) => (
-                          <li key={index}>{step}</li>
-                        ))}
-                      </ul>
-                      {permissionInstructions.title === 'Permission Denied' && (
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
-                          onClick={checkPermissions}
-                          className="mt-2"
-                        >
-                          <RefreshCw className="w-4 h-4 mr-2" />
-                          Check Again
-                        </Button>
-                      )}
-                    </div>
-                  </AlertDescription>
-                </Alert>
-              );
-            }
-            return null;
-          })()}
-        </div>
-      )}
-
-      <div className="p-6">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-200px)]">
+      {/* Main Content */}
+      <div className="flex-1 p-6 max-w-7xl mx-auto w-full z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full items-start">
           {/* Video Area */}
-          <div className="lg:col-span-2 space-y-4">
-            <Card className="h-80">
-              <CardContent className="p-0 h-full relative">
-                <video
-                  ref={videoRef}
-                  autoPlay
-                  muted
-                  playsInline
-                  className="w-full h-full object-cover rounded-lg"
-                  style={{ display: isVideoOn ? 'block' : 'none' }}
-                />
-                {!isVideoOn && (
-                  <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center rounded-lg">
-                    <div className="text-center">
-                      <VideoOff className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
-                      <p className="text-lg font-medium text-muted-foreground">Camera Off</p>
-                      <p className="text-sm text-muted-foreground mt-2">Click the video button to enable camera</p>
-                    </div>
+          <div className="lg:col-span-2 space-y-6">
+            <div className="glass-card relative rounded-2xl overflow-hidden shadow-lg border border-primary/20 h-[380px] lg:h-[420px] flex items-center justify-center group transition-all duration-500 hover:border-primary/40 hover:shadow-glow/10">
+              <video
+                ref={videoRef}
+                autoPlay
+                muted
+                playsInline
+                className="w-full h-full object-cover"
+                style={{ display: isVideoOn ? 'block' : 'none' }}
+              />
+              {!isVideoOn && (
+                <div className="w-full h-full bg-gradient-to-br from-card to-muted/10 flex flex-col items-center justify-center">
+                  <div className="w-20 h-20 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center mb-4 shadow-inner">
+                    <VideoOff className="w-8 h-8 text-primary/60" />
                   </div>
-                )}
-                <div className="absolute bottom-4 left-4 bg-black/50 text-white px-2 py-1 rounded text-sm">
-                  {candidateName || "You"} {!isAudioOn && <MicOff className="inline w-3 h-3 ml-1" />}
+                  <p className="text-muted-foreground font-semibold text-sm">Your Camera is Off</p>
+                  <p className="text-xs text-muted-foreground mt-1">Enable camera using the control bar below</p>
                 </div>
-                {isVideoOn && isVideoStreamReady && (
-                  <div className="absolute top-4 right-4 bg-green-500 text-white px-2 py-1 rounded text-xs flex items-center">
-                    <div className="w-2 h-2 bg-white rounded-full mr-1 animate-pulse"></div>
-                    LIVE
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+              )}
+              <div className="absolute bottom-4 left-4 glass-panel backdrop-blur-md text-white px-3 py-1 rounded-full text-xs font-medium flex items-center space-x-2 border-white/10">
+                <span>{candidateName || "You"}</span>
+                {!isAudioOn && <MicOff className="w-3.5 h-3.5 text-destructive" />}
+              </div>
+              {isVideoOn && isVideoStreamReady && (
+                <div className="absolute top-4 right-4 bg-green-500/20 border border-green-500 text-green-400 px-3 py-1 rounded-full text-xs font-semibold flex items-center space-x-1.5 shadow-glow">
+                  <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                  <span>LIVE FEED</span>
+                </div>
+              )}
+            </div>
 
             {/* Controls */}
-            <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <Button
-                      variant={isAudioOn ? "secondary" : "destructive"}
-                      size="sm"
-                      onClick={toggleAudio}
-                    >
-                      {isAudioOn ? <Mic className="w-4 h-4" /> : <MicOff className="w-4 h-4" />}
-                    </Button>
-                    
-                    <Button
-                      variant={isVideoOn ? "secondary" : "destructive"}
-                      size="sm"
-                      onClick={toggleVideo}
-                    >
-                      {isVideoOn ? <Video className="w-4 h-4" /> : <VideoOff className="w-4 h-4" />}
-                    </Button>
-                    
-                    <Button
-                      variant={isListening ? "default" : "outline"}
-                      size="sm"
-                      onClick={toggleListening}
-                    >
-                      <MessageSquare className="w-4 h-4" />
-                    </Button>
-                    
-                    {!isRecordingAudio ? (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => {
-                          if (questions.length > 0 && currentQuestionIndex > 0) {
-                            const currentQuestion = questions[currentQuestionIndex - 1];
-                            startAudioRecording(currentQuestion.id);
-                          } else {
-                            toast({
-                              title: "No Active Question",
-                              description: "Please ask a question first before recording",
-                              variant: "destructive"
-                            });
-                          }
-                        }}
-                        disabled={currentQuestionIndex === 0}
-                      >
-                        <Mic className="w-4 h-4" />
-                      </Button>
-                    ) : (
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={stopAudioRecording}
-                      >
-                        <Square className="w-4 h-4" />
-                      </Button>
-                    )}
-                  </div>
-
-                  <div className="flex items-center space-x-2">
-                    {isRecordingAudio && currentQuestionRecording && (
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={stopAudioRecording}
-                      >
-                        <Square className="w-4 h-4 mr-2" />
-                        Stop Recording
-                      </Button>
-                    )}
-                    
-                    <Button 
-                      onClick={askNextQuestion}
-                      disabled={currentQuestionIndex >= questions.length}
-                      className="bg-primary hover:bg-primary/90"
-                    >
-                      <Brain className="w-4 h-4 mr-2" />
-                      Next Question
-                    </Button>
-                    
-                    <Button 
-                      onClick={() => {
-                        console.log('Video element:', videoRef.current);
-                        console.log('Video srcObject:', videoRef.current?.srcObject);
-                        console.log('Video readyState:', videoRef.current?.readyState);
-                        console.log('Video paused:', videoRef.current?.paused);
-                        console.log('IsVideoOn:', isVideoOn);
-                        console.log('IsVideoStreamReady:', isVideoStreamReady);
+            <div className="glass-panel border border-white/10 dark:border-white/5 rounded-2xl p-4 shadow-lg flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="flex items-center space-x-3">
+                <Button
+                  variant={isAudioOn ? "secondary" : "destructive"}
+                  size="icon"
+                  onClick={toggleAudio}
+                  className={`w-10 h-10 rounded-xl transition-all duration-300 ${isAudioOn ? "glass-card hover:bg-primary/20 border-white/10 hover:border-primary/40" : "bg-destructive hover:bg-destructive/90 shadow-glow"}`}
+                >
+                  {isAudioOn ? <Mic className="w-4 h-4" /> : <MicOff className="w-4 h-4" />}
+                </Button>
+                
+                <Button
+                  variant={isVideoOn ? "secondary" : "destructive"}
+                  size="icon"
+                  onClick={toggleVideo}
+                  className={`w-10 h-10 rounded-xl transition-all duration-300 ${isVideoOn ? "glass-card hover:bg-primary/20 border-white/10 hover:border-primary/40" : "bg-destructive hover:bg-destructive/90 shadow-glow"}`}
+                >
+                  {isVideoOn ? <Video className="w-4 h-4" /> : <VideoOff className="w-4 h-4" />}
+                </Button>
+                
+                <Button
+                  variant={isListening ? "default" : "outline"}
+                  size="icon"
+                  onClick={toggleListening}
+                  className={`w-10 h-10 rounded-xl transition-all duration-300 ${isListening ? "bg-primary text-white shadow-glow" : "glass-card hover:bg-primary/20 border-white/10 hover:border-primary/40"}`}
+                  title="Toggle Speech Recognition"
+                >
+                  <MessageSquare className="w-4 h-4" />
+                </Button>
+                
+                {!isRecordingAudio ? (
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => {
+                      if (questions.length > 0 && currentQuestionIndex > 0) {
+                        const currentQuestion = questions[currentQuestionIndex - 1];
+                        startAudioRecording(currentQuestion.id);
+                      } else {
                         toast({
-                          title: "Debug Info",
-                          description: "Check console for video debug information"
+                          title: "No Active Question",
+                          description: "Please ask a question first before recording",
+                          variant: "destructive"
                         });
-                      }}
-                      variant="outline"
-                      size="sm"
-                    >
-                      Debug
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+                      }
+                    }}
+                    disabled={currentQuestionIndex === 0}
+                    className="w-10 h-10 rounded-xl glass-card hover:bg-primary/20 border-white/10 hover:border-primary/40 disabled:opacity-50"
+                    title="Record Answer"
+                  >
+                    <Mic className="w-4 h-4 text-secondary-light" />
+                  </Button>
+                ) : (
+                  <Button
+                    variant="destructive"
+                    size="icon"
+                    onClick={stopAudioRecording}
+                    className="w-10 h-10 rounded-xl bg-destructive hover:bg-destructive/90 shadow-glow animate-pulse"
+                    title="Stop Recording"
+                  >
+                    <Square className="w-4 h-4" />
+                  </Button>
+                )}
+              </div>
 
-            {/* Current Question */}
+              <div className="flex items-center space-x-3">
+                {isRecordingAudio && currentQuestionRecording && (
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={stopAudioRecording}
+                    className="rounded-xl px-4 py-2 border-red-500 text-red-500 font-semibold"
+                  >
+                    <Square className="w-4 h-4 mr-2" />
+                    Stop Rec
+                  </Button>
+                )}
+                
+                <Button 
+                  onClick={askNextQuestion}
+                  disabled={currentQuestionIndex >= questions.length}
+                  className="bg-gradient-to-r from-primary to-secondary text-white font-semibold px-6 py-5 rounded-xl hover:opacity-90 transition-all duration-300 transform hover:scale-[1.02] shadow-glow disabled:opacity-50"
+                >
+                  <Brain className="w-4 h-4 mr-2" />
+                  Next Question
+                </Button>
+                
+                <Button 
+                  onClick={() => {
+                    console.log('Video element:', videoRef.current);
+                    console.log('Video srcObject:', videoRef.current?.srcObject);
+                    console.log('Video readyState:', videoRef.current?.readyState);
+                    console.log('Video paused:', videoRef.current?.paused);
+                    console.log('IsVideoOn:', isVideoOn);
+                    console.log('IsVideoStreamReady:', isVideoStreamReady);
+                    toast({
+                      title: "Debug Info",
+                      description: "Check console for video debug information"
+                    });
+                  }}
+                  variant="outline"
+                  size="sm"
+                  className="glass-card hover:bg-muted text-xs rounded-xl px-3"
+                >
+                  Debug
+                </Button>
+              </div>
+            </div>
+
+            {/* Current Question Block */}
             {questions.length > 0 && currentQuestionIndex > 0 && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-sm">Current Question</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-lg">{questions[currentQuestionIndex - 1]?.text}</p>
-                  <Badge variant="outline" className="mt-2">
-                    {questions[currentQuestionIndex - 1]?.category}
-                  </Badge>
-                </CardContent>
-              </Card>
+              <div className="glass-card rounded-2xl p-6 border-l-4 border-l-secondary border-t border-r border-b border-secondary/15 shadow-md transition-all duration-300">
+                <h3 className="text-xs font-bold tracking-wide uppercase text-secondary mb-2 flex items-center">
+                  <span>Current Question</span>
+                  <span className="ml-2 w-1.5 h-1.5 rounded-full bg-secondary animate-ping" />
+                </h3>
+                <p className="text-lg font-semibold leading-relaxed text-foreground">{questions[currentQuestionIndex - 1]?.text}</p>
+                <Badge variant="outline" className="mt-3 bg-secondary/10 border-secondary/20 text-secondary-light font-medium uppercase tracking-wider text-[9px]">
+                  {questions[currentQuestionIndex - 1]?.category}
+                </Badge>
+              </div>
             )}
           </div>
 
           {/* Sidebar */}
-          <div className="space-y-4">
+          <div className="space-y-6">
             {/* Questions List */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-sm flex items-center">
-                  <Briefcase className="w-4 h-4 mr-2" />
-                  Interview Questions ({questions.filter(q => q.asked).length}/{questions.length})
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2 max-h-48 overflow-y-auto">
+            <div className="glass-card rounded-2xl p-5 border border-primary/10 shadow-md flex flex-col max-h-[300px]">
+              <h2 className="text-sm font-bold tracking-wide uppercase text-secondary mb-3 flex items-center">
+                <Briefcase className="w-4 h-4 mr-2 text-secondary" />
+                Questions Progress ({questions.filter(q => q.asked).length}/{questions.length})
+              </h2>
+              <div className="flex-1 space-y-3 overflow-y-auto pr-1 custom-scrollbar min-h-[140px]">
                 {questions.map((question, index) => (
                   <div 
                     key={question.id} 
-                    className={`p-2 rounded text-sm ${
-                      question.asked ? 'bg-success/10 border-success/20' : 'bg-muted'
-                    } border`}
+                    className={`p-3 rounded-xl text-xs transition-colors border ${
+                      question.asked 
+                        ? 'bg-success/15 border-success/35 text-foreground' 
+                        : 'bg-muted/30 border-border/30 text-muted-foreground'
+                    }`}
                   >
-                    <p className="font-medium">Q{index + 1}:</p>
-                    <p className="text-muted-foreground text-xs">{question.text}</p>
-                    <Badge variant="outline" className="mt-1 text-xs">
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="font-bold">Q{index + 1}</span>
+                      {question.asked && (
+                        <span className="text-[10px] text-success-foreground font-semibold uppercase bg-success/20 px-2 py-0.5 rounded-full border border-success/30">Asked</span>
+                      )}
+                    </div>
+                    <p className="leading-relaxed font-medium">{question.text}</p>
+                    <Badge variant="outline" className="mt-2 text-[9px] uppercase tracking-wider">
                       {question.category}
                     </Badge>
                   </div>
                 ))}
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
             {/* Live Transcript */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-sm">Live Transcript</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2 max-h-96 overflow-y-auto">
+            <div className="glass-card rounded-2xl p-5 border border-primary/10 shadow-md flex flex-col max-h-[380px]">
+              <h2 className="text-sm font-bold tracking-wide uppercase text-primary-light mb-3 flex items-center">
+                <MessageSquare className="w-4 h-4 mr-2 text-primary" />
+                Live Transcript
+              </h2>
+              <div className="flex-1 space-y-3 overflow-y-auto pr-1 custom-scrollbar min-h-[160px]">
                 {transcript.map((entry) => (
-                  <div key={entry.id} className="p-2 bg-muted rounded text-sm">
-                    <div className="flex items-center justify-between mb-1">
-                    <Badge variant={entry.speaker === 'interviewer' ? 'default' : 'secondary'}>
-                      {entry.speaker === 'interviewer' ? 'AI' : 'You'}
-                    </Badge>
-                      <span className="text-xs text-muted-foreground">
+                  <div key={entry.id} className="p-3 bg-muted/30 border border-border/20 rounded-xl text-xs space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <Badge variant={entry.speaker === 'interviewer' ? 'default' : 'secondary'} className={entry.speaker === 'interviewer' ? 'bg-primary/20 border-primary text-primary-light' : 'bg-secondary/20 border-secondary text-secondary-light'}>
+                        {entry.speaker === 'interviewer' ? 'AI Assistant' : 'You'}
+                      </Badge>
+                      <span className="text-[10px] text-muted-foreground font-medium">
                         {entry.timestamp.toLocaleTimeString()}
                       </span>
                     </div>
-                    <p className="text-muted-foreground">{entry.text}</p>
+                    <p className="text-foreground leading-relaxed font-medium">{entry.text}</p>
                   </div>
                 ))}
                 {currentTranscript && (
-                  <div className="p-2 bg-primary/10 rounded text-sm border border-primary/20">
-                    <Badge variant="secondary" className="mb-1">You (speaking...)</Badge>
-                    <p className="text-muted-foreground italic">{currentTranscript}</p>
+                  <div className="p-3 bg-primary/10 rounded-xl border border-primary/20 text-xs animate-pulse">
+                    <div className="flex items-center justify-between mb-1">
+                      <Badge variant="secondary" className="bg-primary/30 border-primary text-primary-light">You (Speaking...)</Badge>
+                    </div>
+                    <p className="text-foreground italic font-medium">{currentTranscript}</p>
                   </div>
                 )}
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
             {/* Audio Recordings */}
             {audioRecordings.length > 0 && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-sm flex items-center">
-                    <Volume2 className="w-4 h-4 mr-2" />
-                    Audio Recordings ({audioRecordings.length})
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-2 max-h-64 overflow-y-auto">
+              <div className="glass-card rounded-2xl p-5 border border-primary/10 shadow-md flex flex-col max-h-[280px]">
+                <h2 className="text-sm font-bold tracking-wide uppercase text-primary-light mb-3 flex items-center">
+                  <Volume2 className="w-4 h-4 mr-2 text-primary" />
+                  Your Recordings ({audioRecordings.length})
+                </h2>
+                <div className="flex-1 space-y-3 overflow-y-auto pr-1 custom-scrollbar min-h-[100px]">
                   {audioRecordings.map((recording, index) => (
-                    <div key={index} className="p-2 bg-muted rounded text-sm">
-                      <div className="flex items-center justify-between mb-1">
-                        <Badge variant="outline">Question {recording.questionId}</Badge>
-                        <span className="text-xs text-muted-foreground">
-                          {Math.round(recording.duration / 1000)}s
-                        </span>
+                    <div key={index} className="p-3 bg-muted/40 border border-border/25 rounded-xl text-xs flex justify-between items-center">
+                      <div className="space-y-1">
+                        <p className="font-semibold text-foreground">Response to Q{recording.questionId}</p>
+                        <p className="text-[10px] text-muted-foreground flex items-center">
+                          <Clock className="w-3 h-3 mr-1" />
+                          {recording.timestamp.toLocaleTimeString()} • {Math.round(recording.duration / 1000)}s
+                        </p>
                       </div>
-                      <div className="flex items-center space-x-2 mt-1">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => playAudioRecording(recording.audioUrl)}
-                        >
-                          <Play className="w-3 h-3 mr-1" />
-                          Play
-                        </Button>
-                        <span className="text-xs text-muted-foreground">
-                          {recording.timestamp.toLocaleTimeString()}
-                        </span>
-                      </div>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => playAudioRecording(recording.audioUrl)}
+                        className="glass-card hover:bg-primary/20 border-white/10 hover:border-primary/40 px-3 py-1.5 h-8 text-xs font-semibold rounded-lg"
+                      >
+                        <Play className="w-3 h-3 mr-1.5 fill-current" />
+                        Play
+                      </Button>
                     </div>
                   ))}
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             )}
           </div>
         </div>
