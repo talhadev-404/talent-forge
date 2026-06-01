@@ -24,7 +24,8 @@ import {
   AlertCircle,
   CheckCircle,
   RefreshCw,
-  Send
+  Send,
+  Brain
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -46,6 +47,13 @@ const InterviewRoom = () => {
   const [notes, setNotes] = useState("");
   const [isRequestingPermissions, setIsRequestingPermissions] = useState(false);
   
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [isAgentSpeaking, setIsAgentSpeaking] = useState(false);
+  const [responseInput, setResponseInput] = useState("");
+  const [transcript, setTranscript] = useState<{ sender: string; text: string; timestamp: string }[]>([
+    { sender: "System", text: "AI Agent Interviewer connected. Click 'Start Interview' to begin your first round.", timestamp: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) }
+  ]);
+
   // Video refs for camera streams
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
@@ -56,7 +64,7 @@ const InterviewRoom = () => {
     candidate: "Alex Johnson",
     position: "Senior Frontend Developer", 
     company: "TechCorp",
-    interviewer: user?.role === 'candidate' ? "Sarah Wilson" : "Alex Johnson",
+    interviewer: "AI Agent Interviewer",
     type: "Technical Interview",
     duration: "60 minutes",
     scheduledTime: "10:00 AM - 11:00 AM",
@@ -95,8 +103,62 @@ const InterviewRoom = () => {
         const stream = remoteVideo.srcObject as MediaStream;
         stream.getTracks().forEach(track => track.stop());
       }
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
     };
   }, []);
+
+  const speakQuestion = (text: string) => {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 0.95;
+      utterance.onstart = () => setIsAgentSpeaking(true);
+      utterance.onend = () => setIsAgentSpeaking(false);
+      utterance.onerror = () => setIsAgentSpeaking(false);
+      window.speechSynthesis.speak(utterance);
+    } else {
+      setIsAgentSpeaking(true);
+      setTimeout(() => setIsAgentSpeaking(false), 3000);
+    }
+  };
+
+  const handleSendResponse = () => {
+    if (!responseInput.trim()) return;
+    
+    const userMsg = responseInput.trim();
+    setTranscript(prev => [
+      ...prev,
+      { sender: "You", text: userMsg, timestamp: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) }
+    ]);
+    setResponseInput("");
+    
+    setTimeout(() => {
+      let nextQ = "";
+      let nextIndex = currentQuestionIndex + 1;
+      
+      if (currentQuestionIndex === 1) {
+        nextQ = "Thank you for sharing that. Next question: How would you optimize a slow-loading React application?";
+      } else if (currentQuestionIndex === 2) {
+        nextQ = "That makes sense. Can you explain the main differences between server-side rendering and client-side rendering?";
+      } else if (currentQuestionIndex === 3) {
+        nextQ = "Understood. Finally, walk me through how you would design a scalable component library.";
+      } else if (currentQuestionIndex === 4) {
+        nextQ = "Thank you! That completes our first-round interview today. I will compile your responses and forward them to the hiring team. Have a great day!";
+        nextIndex = 5;
+      }
+      
+      if (nextQ) {
+        setTranscript(prev => [
+          ...prev,
+          { sender: "AI Interviewer", text: nextQ, timestamp: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) }
+        ]);
+        speakQuestion(nextQ);
+        setCurrentQuestionIndex(nextIndex);
+      }
+    }, 1500);
+  };
 
   const handleStartInterview = async () => {
     setIsRequestingPermissions(true);
@@ -124,6 +186,18 @@ const InterviewRoom = () => {
         title: "Interview Started",
         description: "Camera and microphone are now active. Recording has begun!"
       });
+
+      // Wait a short moment to start speaking the first question
+      setTimeout(() => {
+        const firstQ = "Welcome to your first-round interview for the Senior Frontend Developer position at TechCorp. I am your AI interviewer. Let's start with the first question: Tell me about your experience with React and TypeScript.";
+        setTranscript(prev => [
+          ...prev,
+          { sender: "AI Interviewer", text: firstQ, timestamp: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) }
+        ]);
+        speakQuestion(firstQ);
+        setCurrentQuestionIndex(1);
+      }, 1500);
+
     } catch (error) {
       console.error('Media access error:', error);
       toast({
@@ -333,32 +407,68 @@ const InterviewRoom = () => {
                   </div>
                 </div>
 
-                {/* Remote Video */}
-                <div className="glass-card relative rounded-2xl overflow-hidden shadow-lg border border-secondary/20 flex items-center justify-center group transition-all duration-500 hover:border-secondary/40 hover:shadow-glow/10">
+                {/* Remote Video (AI Agent) */}
+                <div className="glass-card relative rounded-2xl overflow-hidden shadow-lg border border-secondary/20 flex items-center justify-center group transition-all duration-500 hover:border-secondary/40 hover:shadow-glow/10 min-h-[220px]">
                   <video
                     ref={remoteVideoRef}
                     autoPlay
                     playsInline
                     className="w-full h-full object-cover"
-                    style={{ display: 'none' }} // Hidden until remote stream is available
+                    style={{ display: 'none' }} // Hidden because it's a dummy AI Agent
                   />
-                  <div className="w-full h-full bg-gradient-to-br from-card to-muted/10 flex flex-col items-center justify-center">
-                    <div className="w-20 h-20 rounded-full bg-secondary/10 border border-secondary/20 flex items-center justify-center mb-4 shadow-inner">
-                      <Users className="w-8 h-8 text-secondary/60" />
-                    </div>
-                    <p className="text-foreground font-semibold text-sm">{interviewData.interviewer}</p>
-                    <p className="text-xs text-muted-foreground mt-1 flex items-center">
-                      <RefreshCw className="w-3 h-3 mr-1 animate-spin text-secondary" />
-                      Waiting for connection...
+                  <div className="w-full h-full bg-gradient-to-br from-card to-muted/10 flex flex-col items-center justify-center p-6 text-center">
+                    {isAgentSpeaking ? (
+                      <div className="relative mb-6">
+                        {/* Waving/equalizer circle */}
+                        <div className="absolute inset-0 rounded-full bg-secondary/20 animate-ping pointer-events-none scale-150" />
+                        <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-primary to-secondary flex items-center justify-center shadow-glow animate-pulse">
+                          <Brain className="w-10 h-10 text-white animate-bounce" />
+                        </div>
+                        {/* Audio equalizer bars */}
+                        <div className="flex justify-center items-end space-x-1.5 mt-4 h-6">
+                          <span className="w-1 bg-secondary rounded-full animate-bounce h-4" style={{ animationDelay: '0.1s' }} />
+                          <span className="w-1 bg-secondary rounded-full animate-bounce h-6" style={{ animationDelay: '0.3s' }} />
+                          <span className="w-1 bg-secondary rounded-full animate-bounce h-5" style={{ animationDelay: '0.2s' }} />
+                          <span className="w-1 bg-secondary rounded-full animate-bounce h-6" style={{ animationDelay: '0.4s' }} />
+                          <span className="w-1 bg-secondary rounded-full animate-bounce h-3" style={{ animationDelay: '0.5s' }} />
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="w-24 h-24 rounded-full bg-secondary/10 border border-secondary/20 flex items-center justify-center mb-6 shadow-inner relative group-hover:scale-105 transition-transform duration-300">
+                        {interviewStarted ? (
+                          <div className="absolute inset-0 rounded-full border border-secondary/30 animate-ping scale-110 pointer-events-none" />
+                        ) : null}
+                        <Brain className={`w-10 h-10 ${interviewStarted ? "text-secondary animate-pulse" : "text-muted-foreground"}`} />
+                      </div>
+                    )}
+                    <p className="text-foreground font-bold text-sm tracking-tight">
+                      {interviewData.interviewer}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-2 font-medium flex items-center justify-center">
+                      {interviewStarted ? (
+                        isAgentSpeaking ? (
+                          <span className="text-secondary font-semibold animate-pulse flex items-center">
+                            <span className="w-2 h-2 rounded-full bg-secondary mr-2 animate-ping" />
+                            Speaking...
+                          </span>
+                        ) : (
+                          <span className="flex items-center text-primary-light">
+                            <span className="w-2 h-2 rounded-full bg-primary mr-2 animate-pulse" />
+                            Listening to you
+                          </span>
+                        )
+                      ) : (
+                        <span className="flex items-center">
+                          <span className="w-2 h-2 rounded-full bg-muted mr-2" />
+                          Ready for Interview
+                        </span>
+                      )}
                     </p>
                   </div>
                   {/* Status Overlay */}
                   <div className="absolute top-4 left-4 glass-panel backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold flex items-center space-x-1.5 border-white/10">
-                    <span className="w-2 h-2 rounded-full bg-secondary animate-pulse" />
-                    <span>Remote Stream</span>
-                  </div>
-                  <div className="absolute bottom-4 left-4 glass-panel backdrop-blur-md text-white px-3 py-1 rounded-full text-xs font-medium border-white/10">
-                    {interviewData.interviewer}
+                    <span className={`w-2 h-2 rounded-full ${interviewStarted ? "bg-secondary animate-pulse" : "bg-muted"}`} />
+                    <span>AI Interviewer</span>
                   </div>
                 </div>
               </div>
@@ -437,7 +547,7 @@ const InterviewRoom = () => {
                       </>
                     ) : (
                       <>
-                        <Phone className="w-4 h-4 mr-2" />
+                        <Phone className="w-4 h-4 mr-2 animate-bounce" />
                         Start Interview
                       </>
                     )}
@@ -454,6 +564,77 @@ const InterviewRoom = () => {
                 )}
               </div>
             </div>
+
+            {/* Live Transcript Panel */}
+            <div className="glass-card rounded-2xl p-6 border border-primary/20 shadow-md">
+              <h2 className="text-sm font-bold tracking-wide uppercase text-secondary mb-4 flex items-center justify-between">
+                <span className="flex items-center">
+                  <span className="w-1.5 h-3 bg-secondary rounded-full mr-2"></span>
+                  First-Round Interview Transcript
+                </span>
+                {interviewStarted && (
+                  <Badge variant="outline" className="bg-secondary/15 border-secondary/30 text-secondary-light font-semibold text-[10px] uppercase animate-pulse">
+                    Active Session
+                  </Badge>
+                )}
+              </h2>
+              
+              <div className="space-y-4 max-h-[220px] overflow-y-auto pr-1 mb-4 custom-scrollbar flex flex-col">
+                {transcript.map((entry, index) => {
+                  const isAI = entry.sender === "AI Interviewer";
+                  const isSystem = entry.sender === "System";
+                  
+                  if (isSystem) {
+                    return (
+                      <div key={index} className="text-center py-2 px-4 bg-muted/20 border border-border/20 rounded-xl max-w-lg mx-auto text-xs text-muted-foreground">
+                        {entry.text}
+                      </div>
+                    );
+                  }
+                  
+                  return (
+                    <div 
+                      key={index} 
+                      className={`flex flex-col max-w-[80%] rounded-2xl p-4 text-sm ${
+                        isAI 
+                          ? "bg-secondary/10 border border-secondary/20 self-start text-foreground rounded-tl-none" 
+                          : "bg-primary/10 border border-primary/20 self-end text-foreground rounded-tr-none"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between space-x-4 mb-1">
+                        <span className={`font-bold text-xs ${isAI ? "text-secondary" : "text-primary-light"}`}>
+                          {entry.sender}
+                        </span>
+                        <span className="text-[10px] text-muted-foreground font-medium">{entry.timestamp}</span>
+                      </div>
+                      <p className="leading-relaxed font-semibold">{entry.text}</p>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {interviewStarted && currentQuestionIndex < 5 && (
+                <div className="flex space-x-2 pt-4 border-t border-border/20">
+                  <input
+                    type="text"
+                    placeholder={isAgentSpeaking ? "AI Agent is speaking, please listen..." : "Type your answer here..."}
+                    value={responseInput}
+                    onChange={(e) => setResponseInput(e.target.value)}
+                    className="flex-1 px-4 py-3 bg-background/50 border border-border/40 focus:outline-none focus:ring-1 focus:ring-secondary rounded-xl text-sm disabled:opacity-50"
+                    onKeyPress={(e) => e.key === 'Enter' && handleSendResponse()}
+                    disabled={isAgentSpeaking}
+                  />
+                  <Button 
+                    onClick={handleSendResponse}
+                    disabled={isAgentSpeaking || !responseInput.trim()}
+                    className="bg-secondary hover:bg-secondary/90 text-white font-semibold rounded-xl px-5 transition-all disabled:opacity-50"
+                  >
+                    Send Answer
+                  </Button>
+                </div>
+              )}
+            </div>
+
           </div>
 
           {/* Sidebar */}
@@ -500,24 +681,6 @@ const InterviewRoom = () => {
                   onChange={(e) => setNotes(e.target.value)}
                   className="min-h-[140px] bg-background/50 border-border/40 focus:ring-1 focus:ring-primary rounded-xl p-3 text-sm resize-none"
                 />
-              </div>
-            )}
-
-            {/* Questions (for interviewers) */}
-            {user?.role === 'interviewer' && (
-              <div className="glass-card rounded-2xl p-5 border border-primary/10 shadow-md">
-                <h2 className="text-sm font-bold tracking-wide uppercase text-primary-light mb-4 flex items-center">
-                  <span className="w-1.5 h-3 bg-primary rounded-full mr-2"></span>
-                  Interview Questions
-                </h2>
-                <div className="space-y-3 max-h-[250px] overflow-y-auto pr-1 custom-scrollbar">
-                  {interviewData.questions.map((question, index) => (
-                    <div key={index} className="p-3 bg-muted/30 hover:bg-muted/50 transition-colors border border-border/30 rounded-xl text-xs space-y-1">
-                      <p className="font-semibold text-primary">Question {index + 1}</p>
-                      <p className="text-muted-foreground leading-relaxed font-medium">{question}</p>
-                    </div>
-                  ))}
-                </div>
               </div>
             )}
 
