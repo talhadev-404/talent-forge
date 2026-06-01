@@ -51,8 +51,11 @@ const InterviewRoom = () => {
   const [isAgentSpeaking, setIsAgentSpeaking] = useState(false);
   const [responseInput, setResponseInput] = useState("");
   const [transcript, setTranscript] = useState<{ sender: string; text: string; timestamp: string }[]>([
-    { sender: "System", text: "AI Agent Interviewer connected. Click 'Start Interview' to begin your first round.", timestamp: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) }
+    { sender: "System", text: "AI Agent Interviewer connected. Choose your avatar in the panel and click 'Start Interview' to begin.", timestamp: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) }
   ]);
+
+  const [interviewerGender, setInterviewerGender] = useState<'female' | 'male'>('female');
+  const interviewerName = interviewerGender === 'female' ? "Sarah Wilson (AI)" : "David Miller (AI)";
 
   // Video refs for camera streams
   const localVideoRef = useRef<HTMLVideoElement>(null);
@@ -64,7 +67,7 @@ const InterviewRoom = () => {
     candidate: "Alex Johnson",
     position: "Senior Frontend Developer", 
     company: "TechCorp",
-    interviewer: "AI Agent Interviewer",
+    interviewer: interviewerName,
     type: "Technical Interview",
     duration: "60 minutes",
     scheduledTime: "10:00 AM - 11:00 AM",
@@ -408,7 +411,11 @@ const InterviewRoom = () => {
                 </div>
 
                 {/* Remote Video (AI Agent) */}
-                <div className="glass-card relative rounded-2xl overflow-hidden shadow-lg border border-secondary/20 flex items-center justify-center group transition-all duration-500 hover:border-secondary/40 hover:shadow-glow/10 min-h-[220px]">
+                <div className={`glass-card relative rounded-2xl overflow-hidden shadow-lg flex items-center justify-center transition-all duration-500 min-h-[220px] ${
+                  isAgentSpeaking 
+                    ? "border-2 border-secondary shadow-glow animate-pulse" 
+                    : "border border-secondary/20 hover:border-secondary/40 hover:shadow-glow/10"
+                }`}>
                   <video
                     ref={remoteVideoRef}
                     autoPlay
@@ -416,59 +423,89 @@ const InterviewRoom = () => {
                     className="w-full h-full object-cover"
                     style={{ display: 'none' }} // Hidden because it's a dummy AI Agent
                   />
-                  <div className="w-full h-full bg-gradient-to-br from-card to-muted/10 flex flex-col items-center justify-center p-6 text-center">
-                    {isAgentSpeaking ? (
-                      <div className="relative mb-6">
-                        {/* Waving/equalizer circle */}
-                        <div className="absolute inset-0 rounded-full bg-secondary/20 animate-ping pointer-events-none scale-150" />
-                        <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-primary to-secondary flex items-center justify-center shadow-glow animate-pulse">
-                          <Brain className="w-10 h-10 text-white animate-bounce" />
-                        </div>
-                        {/* Audio equalizer bars */}
-                        <div className="flex justify-center items-end space-x-1.5 mt-4 h-6">
-                          <span className="w-1 bg-secondary rounded-full animate-bounce h-4" style={{ animationDelay: '0.1s' }} />
-                          <span className="w-1 bg-secondary rounded-full animate-bounce h-6" style={{ animationDelay: '0.3s' }} />
-                          <span className="w-1 bg-secondary rounded-full animate-bounce h-5" style={{ animationDelay: '0.2s' }} />
-                          <span className="w-1 bg-secondary rounded-full animate-bounce h-6" style={{ animationDelay: '0.4s' }} />
-                          <span className="w-1 bg-secondary rounded-full animate-bounce h-3" style={{ animationDelay: '0.5s' }} />
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="w-24 h-24 rounded-full bg-secondary/10 border border-secondary/20 flex items-center justify-center mb-6 shadow-inner relative group-hover:scale-105 transition-transform duration-300">
+                  
+                  {/* Face Avatar Image */}
+                  <img
+                    src={interviewerGender === 'female' ? "/ai_interviewer.png" : "/ai_interviewer_male.png"}
+                    alt={interviewerName}
+                    className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 ${
+                      isAgentSpeaking ? "scale-105 brightness-110" : "scale-100 brightness-95"
+                    }`}
+                  />
+                  
+                  {/* Dark Vignette Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
+
+                  {/* Equalizer Waveform Overlay (When speaking) */}
+                  {isAgentSpeaking && (
+                    <div className="absolute inset-x-0 bottom-16 flex justify-center items-end space-x-1.5 h-8 bg-black/30 py-1 backdrop-blur-[2px] z-10">
+                      <span className="w-1 bg-secondary rounded-full animate-bounce h-5" style={{ animationDelay: '0.1s' }} />
+                      <span className="w-1 bg-secondary rounded-full animate-bounce h-7" style={{ animationDelay: '0.3s' }} />
+                      <span className="w-1 bg-secondary rounded-full animate-bounce h-6" style={{ animationDelay: '0.2s' }} />
+                      <span className="w-1 bg-secondary rounded-full animate-bounce h-7" style={{ animationDelay: '0.4s' }} />
+                      <span className="w-1 bg-secondary rounded-full animate-bounce h-4" style={{ animationDelay: '0.5s' }} />
+                    </div>
+                  )}
+
+                  {/* Details Overlay at the bottom */}
+                  <div className="absolute bottom-4 inset-x-4 flex items-center justify-between z-10">
+                    <div>
+                      <p className="text-white font-bold text-sm drop-shadow-md">
+                        {interviewerName}
+                      </p>
+                      <p className="text-xs text-white/70 drop-shadow-sm font-medium flex items-center mt-0.5">
                         {interviewStarted ? (
-                          <div className="absolute inset-0 rounded-full border border-secondary/30 animate-ping scale-110 pointer-events-none" />
-                        ) : null}
-                        <Brain className={`w-10 h-10 ${interviewStarted ? "text-secondary animate-pulse" : "text-muted-foreground"}`} />
+                          isAgentSpeaking ? (
+                            <span className="text-secondary-light font-semibold animate-pulse flex items-center">
+                              <span className="w-2 h-2 rounded-full bg-secondary mr-2 animate-ping" />
+                              Speaking...
+                            </span>
+                          ) : (
+                            <span className="flex items-center text-secondary-light/95">
+                              <span className="w-2 h-2 rounded-full bg-secondary mr-2 animate-pulse" />
+                              Listening...
+                            </span>
+                          )
+                        ) : (
+                          <span className="flex items-center text-white/50">
+                            <span className="w-2 h-2 rounded-full bg-white/40 mr-2" />
+                            Ready
+                          </span>
+                        )}
+                      </p>
+                    </div>
+
+                    {/* Avatar selection toggler (Only visible before interview starts) */}
+                    {!interviewStarted && (
+                      <div className="flex space-x-1 glass-panel p-1 rounded-lg border-white/10 backdrop-blur-md">
+                        <button
+                          onClick={() => setInterviewerGender('female')}
+                          className={`px-2 py-1 text-[10px] font-bold uppercase rounded transition-all ${
+                            interviewerGender === 'female' 
+                              ? 'bg-secondary text-white shadow-sm' 
+                              : 'text-white/60 hover:text-white'
+                          }`}
+                        >
+                          Female
+                        </button>
+                        <button
+                          onClick={() => setInterviewerGender('male')}
+                          className={`px-2 py-1 text-[10px] font-bold uppercase rounded transition-all ${
+                            interviewerGender === 'male' 
+                              ? 'bg-secondary text-white shadow-sm' 
+                              : 'text-white/60 hover:text-white'
+                          }`}
+                        >
+                          Male
+                        </button>
                       </div>
                     )}
-                    <p className="text-foreground font-bold text-sm tracking-tight">
-                      {interviewData.interviewer}
-                    </p>
-                    <p className="text-xs text-muted-foreground mt-2 font-medium flex items-center justify-center">
-                      {interviewStarted ? (
-                        isAgentSpeaking ? (
-                          <span className="text-secondary font-semibold animate-pulse flex items-center">
-                            <span className="w-2 h-2 rounded-full bg-secondary mr-2 animate-ping" />
-                            Speaking...
-                          </span>
-                        ) : (
-                          <span className="flex items-center text-primary-light">
-                            <span className="w-2 h-2 rounded-full bg-primary mr-2 animate-pulse" />
-                            Listening to you
-                          </span>
-                        )
-                      ) : (
-                        <span className="flex items-center">
-                          <span className="w-2 h-2 rounded-full bg-muted mr-2" />
-                          Ready for Interview
-                        </span>
-                      )}
-                    </p>
                   </div>
+
                   {/* Status Overlay */}
-                  <div className="absolute top-4 left-4 glass-panel backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold flex items-center space-x-1.5 border-white/10">
-                    <span className={`w-2 h-2 rounded-full ${interviewStarted ? "bg-secondary animate-pulse" : "bg-muted"}`} />
-                    <span>AI Interviewer</span>
+                  <div className="absolute top-4 left-4 glass-panel backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold flex items-center space-x-1.5 border-white/10 z-10">
+                    <span className={`w-2 h-2 rounded-full ${interviewStarted ? "bg-secondary animate-pulse" : "bg-white/40"}`} />
+                    <span className="text-white">AI Interviewer</span>
                   </div>
                 </div>
               </div>
